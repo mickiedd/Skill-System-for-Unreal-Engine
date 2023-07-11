@@ -64,23 +64,27 @@ void USkillCtrlComp::LoadSkillData(FSkillJsonData& InSkillJsonData)
 								for (auto NodeValue : *NodesArray)
 								{
 									TSharedPtr<FJsonObject> NodeObject = NodeValue->AsObject();
-									if (NodeObject.IsValid())
+									FString ClassName;
+									if (NodeObject.IsValid() && NodeObject->TryGetStringField("Class", ClassName))
 									{
-										USkillNode* SkillNode = NewObject<USkillNode>(this, USkillNode::StaticClass());
-										SkillNode->SetOwner(GetOwner());
-
-										// Extract NodeName and Class
-										FString ClassName;
-										if (NodeObject->TryGetStringField("NodeName", SkillNode->NodeName) && NodeObject->TryGetStringField("Class", ClassName))
+										UClass* ClassObj = StaticLoadClass(UObject::StaticClass(), nullptr, *ClassName);
+										if (ClassObj)
 										{
-											// Extract Args object
-											TSharedPtr<FJsonObject> ArgsObject = NodeObject->GetObjectField("Args");
-											if (ArgsObject.IsValid())
-											{
-												// todo
-											}
+											USkillNode* SkillNode = NewObject<USkillNode>(this, ClassObj);
+											SkillNode->SetOwner(GetOwner());
 
-											SkillPhase->Nodes.Add(SkillNode);
+											// Extract NodeName and Class
+											if (NodeObject->TryGetStringField("NodeName", SkillNode->NodeName))
+											{
+												// Extract Args object
+												TSharedPtr<FJsonObject> ArgsObject = NodeObject->GetObjectField("Args");
+												if (ArgsObject.IsValid())
+												{
+													// todo
+												}
+
+												SkillPhase->Nodes.Add(SkillNode);
+											}
 										}
 									}
 								}
