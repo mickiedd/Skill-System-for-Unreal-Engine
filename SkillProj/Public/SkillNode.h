@@ -21,6 +21,10 @@ public:
 	// Destructor
 	~USkillNode();
 
+	// NodeName
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkillNode")
+		FString NodeName;
+
 	// Condition
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkillNode")
 		class USkillCondition* Condition;
@@ -40,4 +44,18 @@ public:
 	// Delay Time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkillNode")
 		float DelayTime = 0;
+
+public:
+
+	void SetOwner(AActor* InOwner);
+
+	// pure virtual function, Run
+	virtual void Run() PURE_VIRTUAL(USkillNode::Run, );
+
+	// pure virtual function, Exit
+	virtual void Exit() PURE_VIRTUAL(USkillNode::Exit, );
+
+private:
+
+	AActor* Owner = nullptr;
 };

@@ -13,3 +13,9 @@ USkillNode::USkillNode()
 USkillNode::~USkillNode()
 {
 }
+
+// SetOwner
+void USkillNode::SetOwner(AActor* InOwner)
+{
+	Owner = InOwner;
+}
