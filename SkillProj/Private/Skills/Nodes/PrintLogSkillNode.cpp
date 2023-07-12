@@ -3,3 +3,9 @@
 
 #include "Skills/Nodes/PrintLogSkillNode.h"
 
+// Run
+void UPrintLogSkillNode::Run()
+{
+	// Print Message
+	UE_LOG(LogTemp, Log, TEXT("PrintLogSkillNode: %s"), *Message);
+}

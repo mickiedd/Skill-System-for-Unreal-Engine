@@ -14,6 +14,13 @@ USkillNode::~USkillNode()
 {
 }
 
+// Exit
+void USkillNode::Exit()
+{
+	// print owner, NodeName
+	UE_LOG(LogTemp, Log, TEXT("USkillNode::Exit: %s, %s"), *Owner->GetName(), *NodeName);
+}
+
 // SetOwner
 void USkillNode::SetOwner(AActor* InOwner)
 {

@@ -19,5 +19,10 @@ public:
 	// Message
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PrintLogSkillNode")
 		FString Message;
+
+public:
+
+	// Override Run
+	virtual void Run() override;
 	
 };

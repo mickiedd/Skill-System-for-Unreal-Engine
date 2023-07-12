@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "SkillBase.h"
 #include "SkillNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SKILLPROJ_API USkillNode : public UObject
+class SKILLPROJ_API USkillNode : public USkillBase
 {
 	GENERATED_BODY()
 
@@ -49,11 +50,16 @@ public:
 
 	void SetOwner(AActor* InOwner);
 
+	AActor* GetOwner() { return Owner; }
+
 	// pure virtual function, Run
 	virtual void Run() PURE_VIRTUAL(USkillNode::Run, );
 
 	// pure virtual function, Exit
-	virtual void Exit() PURE_VIRTUAL(USkillNode::Exit, );
+	virtual void Exit();
+
+	// Tick
+	virtual void Tick(float DeltaTime) {};
 
 private:
 

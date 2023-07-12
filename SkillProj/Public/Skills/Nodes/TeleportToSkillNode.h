@@ -19,5 +19,10 @@ public:
 	// LocationOffset
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TeleportToSkillNode")
 		FVector LocationOffset;
+
+public:
+
+	// Override Run
+	virtual void Run() override;
 	
 };

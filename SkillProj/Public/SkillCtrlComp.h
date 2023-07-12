@@ -19,6 +19,11 @@ public:
 	// path
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 		FString SkillPath;
+	// skillphases
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		TArray<class USkillPhase*> SkillPhases;
+
+	bool bRun = false;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -43,12 +48,15 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	// Run Skill
+	UFUNCTION(BlueprintCallable, Category = "Skill")
+		void RunSkill(FString SkillName);
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	// SkillPhase
-	TArray<class USkillPhase*> SkillPhases;
 
 private:
 	// Clear SkillPhases

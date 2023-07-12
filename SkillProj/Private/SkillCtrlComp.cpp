@@ -56,6 +56,9 @@ void USkillCtrlComp::LoadSkillData(FSkillJsonData& InSkillJsonData)
 						// Extract PhaseName and PhaseDuration
 						if (PhaseObject->TryGetStringField("PhaseName", SkillPhase->PhaseName) && PhaseObject->TryGetNumberField("PhaseDuration", SkillPhase->PhaseDuration))
 						{
+							// Extract SkillPhase's Properties
+							SkillPhase->SetArgsJson(PhaseObject);
+
 							// Extract Nodes array
 							const TArray<TSharedPtr<FJsonValue>>* NodesArray;
 							if (PhaseObject->TryGetArrayField("Nodes", NodesArray))
@@ -80,7 +83,7 @@ void USkillCtrlComp::LoadSkillData(FSkillJsonData& InSkillJsonData)
 												TSharedPtr<FJsonObject> ArgsObject = NodeObject->GetObjectField("Args");
 												if (ArgsObject.IsValid())
 												{
-													// todo
+													SkillNode->SetArgsJson(ArgsObject);
 												}
 
 												SkillPhase->Nodes.Add(SkillNode);
@@ -90,7 +93,8 @@ void USkillCtrlComp::LoadSkillData(FSkillJsonData& InSkillJsonData)
 								}
 							}
 
-							SkillPhases.Add(SkillPhase);
+							// Add SkillPhase to SkillPhases
+							InSkillJsonData.SkillPhases.Add(SkillPhase);
 						}
 					}
 				}
@@ -118,6 +122,18 @@ void USkillCtrlComp::BeginPlay()
 	}
 }
 
+// RunSkill
+void USkillCtrlComp::RunSkill(FString SkillName)
+{
+	for (auto& SkillJsonData : SkillJsonDataMap)
+	{
+		if (SkillJsonData.SkillName == SkillName)
+		{
+			SkillJsonData.bRun = true;
+		}
+	}
+}
+
 
 // Called every frame
 void USkillCtrlComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -125,12 +141,46 @@ void USkillCtrlComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	// iterate SkillJsonDataMap, and find the SkillJsonData with SkillName
+	for (auto& SkillJsonData : SkillJsonDataMap)
+	{
+		if (SkillJsonData.bRun)
+		{
+			// iterate SkillPhases
+			for (auto& SkillPhase : SkillJsonData.SkillPhases)
+			{
+				// check IsFinish
+				if (SkillPhase->IsFinish())
+				{
+					continue;
+				}
+				// Run Phase
+				SkillPhase->Run();
+				break;
+			}
+		}
+	}
+
+	// iterate SkillJsonDataMap
+	for (auto& SkillJsonData : SkillJsonDataMap)
+	{
+		// iterate SkillPhases
+		for (auto& SkillPhase : SkillJsonData.SkillPhases)
+		{
+			// Tick Phase
+			SkillPhase->Tick(DeltaTime);
+		}
+	}
 }
 
 // ClearSkillPhases
 void USkillCtrlComp::ClearSkillPhases()
 {
-	// Then clear the TArray itself.
-	SkillPhases.Empty();
+	// iterate SkillJsonDataMap
+	for (auto& SkillJsonData : SkillJsonDataMap)
+	{
+		SkillJsonData.SkillPhases.Empty();
+	}
 }
 
